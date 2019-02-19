@@ -8,7 +8,7 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-func init1() {
+func init() {
 	orm.RegisterDriver("sqlite", orm.DRSqlite)
     orm.RegisterDataBase("default", "sqlite3", "./database/lottery.db")
     orm.RunSyncdb("default", false, true)
