@@ -19,3 +19,8 @@ type LotInfo struct {
 func init() {
 	orm.RegisterModel(new(LotInfo)) 
 }
+
+// TableName .
+func (u *LotInfo) TableName() string{
+	return "lot_info"
+}

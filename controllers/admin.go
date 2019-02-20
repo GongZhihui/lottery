@@ -3,11 +3,10 @@ package controllers
 import(
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"strconv"
+	//"strconv"
 
-	"lottery/utils"
 	"lottery/models"
-	"fmt"
+	//"fmt"
 )
 
 // AdminController .
@@ -22,18 +21,23 @@ func (c *AdminController) Insert() {
 	o.Using("default")
 
 	var admin models.User
-	admin.ID = utils.GenerateRandomString(8)
-	admin.Name = "li1"
-	admin.Password = "123"
-	admin.Role = "admin"
-	i , err := o.Insert(&admin)
-	var msg string
-	if err != nil{
-		msg = err.Error()		
-	}else{
-		msg = ""
+	if name := c.GetString("name"); name != "" {
+		admin.Name = name
 	}
-	c.Ctx.WriteString(strconv.Itoa(int(i)) + msg)
+
+	if pwd := c.GetString("password"); pwd != "" {
+		admin.Password = pwd
+	}
+
+	if role := c.GetString("role"); role != "" {
+		admin.Role = role
+	}
+	
+	if msg := models.Insert(&admin); msg != "" {
+		c.Ctx.WriteString(msg)
+	}else{
+		c.Ctx.WriteString("success")
+	}
 }
 
 // @router /update [get]
@@ -42,9 +46,6 @@ func (c *AdminController) Update() {
 	o.Using("default")
 
 	var admin models.User
-	if id := c.GetString("id"); id != ""{
-		admin.ID = id
-	}
 	if name := c.GetString("name"); name != ""{
 		admin.Name = name
 	}
@@ -57,16 +58,41 @@ func (c *AdminController) Update() {
 		admin.Role = role
 	}
 
-	fmt.Println(admin.ToString())
-
-	i , err := o.Update(&admin)
-
-	var msg string
-	if err != nil{
-		msg = err.Error()		
+	if msg := models.Update(&admin); msg != "" {
+		c.Ctx.WriteString(msg)
 	}else{
-		msg = ""
+		c.Ctx.WriteString("success")
 	}
-	c.Ctx.WriteString(strconv.Itoa(int(i)) + msg)
 }
 
+// @router /delete [get]
+func (c *AdminController) Delete() {
+	var o = orm.NewOrm()
+	o.Using("default")
+
+	var admin models.User
+	if name := c.GetString("name"); name != ""{
+		admin.Name = name
+	}
+
+	if msg := models.Delete(&admin); msg != "" {
+		c.Ctx.WriteString(msg)
+	}else{
+		c.Ctx.WriteString("success")
+	}
+}
+
+// @router /query [get]
+func (c *AdminController) Query() {
+	var o = orm.NewOrm()
+	o.Using("default")
+
+	var admin models.User
+	var name = c.GetString("name")
+
+	if msg := admin.SelectPwdByName(name); msg != "" {
+		c.Ctx.WriteString(msg)
+	}else{
+		c.Ctx.WriteString("success: " + admin.ToString())
+	}
+}

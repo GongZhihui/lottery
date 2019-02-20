@@ -6,8 +6,7 @@ import(
 
 // User user
 type User struct {
-	ID string `orm:"pk;column(id);"`
-	Name string `orm:"column(name);"`
+	Name string `orm:"pk;column(name);"`
 	Password string `orm:"column(password);"`
 	Role string `orm:"column(role);"`
 }
@@ -18,11 +17,22 @@ func init() {
 
 // TableName .
 func (u *User) TableName() string{
-	return "table"
+	return "user"
 }
 
 // ToString .
 func (u *User) ToString() string{
-	return "[ID: " + u.ID + ", Name: " + u.Name + ", Password: " + 
+	return "[Name: " + u.Name + ", Password: " + 
 		u.Password + ", Role: " + u.Role + "]"
+}
+
+// SelectPwdByName .
+func (u *User) SelectPwdByName(name string) string{
+	var sql = "select * from user where name=?"
+	var o = orm.NewOrm()
+	o.Using("default")
+	if err := o.Raw(sql, name).QueryRow(u); err != nil {
+		return err.Error()
+	}
+	return ""
 }
