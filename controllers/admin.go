@@ -2,9 +2,8 @@ package controllers
 
 import(
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/orm"
 	//"strconv"
-
+	"encoding/json"
 	"lottery/models"
 	//"fmt"
 )
@@ -14,85 +13,60 @@ type AdminController struct {
 	beego.Controller
 }
 
+// Get .
+// @Title Get
+// @Description 初始化显示后台数据
+// @Success 200 {object} models.LottoBackendView
+// @router / [get]
+func (c *AdminController) Get() {
+	var back = models.MakeLottoBackend()
+	back.QueryByID()
+	//
+	var view models.LottoBackendView
+	view.Notice = "hello"
+	view.LottoPrompt = "gzh"
+	var item = make([]models.Item, 0)
+	item = append(item, models.Item{"魔岩石", 0.5})
+	item = append(item, models.Item{"金币", 0.25})
+	item = append(item, models.Item{"无色", 0.01})
+	item = append(item, models.Item{"牛奶", 0.02})
+	item = append(item, models.Item{"龙人", 0.25})
+	view.Items = item
+	c.Data["json"] = view
+	//c.Data["json"] = back.ToLottoBackendView()
+	c.ServeJSON()
+}
+
+// Post .
+// @Title Post
+// @Description 提交后台数据
+// @Param	body		body 	models.LottoBackendView	true  "body for LottoBackendView content"
+// @Success 200 {bool} true
+// @Failure 403 submit fail
+// @router / [post]
+func (c *AdminController) Post() {
+	var view models.LottoBackendView
+	json.Unmarshal(c.Ctx.Input.RequestBody, &view)
+	c.Data["json"] = view
+	c.ServeJSON()
+}
 
 // @router /insert [get]
 func (c *AdminController) Insert() {
-	var o = orm.NewOrm()
-	o.Using("default")
-
-	var admin models.User
-	if name := c.GetString("name"); name != "" {
-		admin.Name = name
-	}
-
-	if pwd := c.GetString("password"); pwd != "" {
-		admin.Password = pwd
-	}
-
-	if role := c.GetString("role"); role != "" {
-		admin.Role = role
-	}
-	
-	if msg := models.Insert(&admin); msg != "" {
-		c.Ctx.WriteString(msg)
-	}else{
-		c.Ctx.WriteString("success")
-	}
+	 
 }
 
 // @router /update [get]
 func (c *AdminController) Update() {
-	var o = orm.NewOrm()
-	o.Using("default")
-
-	var admin models.User
-	if name := c.GetString("name"); name != ""{
-		admin.Name = name
-	}
-
-	if paw := c.GetString("password"); paw != ""{
-		admin.Password = paw
-	}
 	
-	if role := c.GetString("role"); role != ""{
-		admin.Role = role
-	}
-
-	if msg := models.Update(&admin); msg != "" {
-		c.Ctx.WriteString(msg)
-	}else{
-		c.Ctx.WriteString("success")
-	}
 }
 
 // @router /delete [get]
 func (c *AdminController) Delete() {
-	var o = orm.NewOrm()
-	o.Using("default")
-
-	var admin models.User
-	if name := c.GetString("name"); name != ""{
-		admin.Name = name
-	}
-
-	if msg := models.Delete(&admin); msg != "" {
-		c.Ctx.WriteString(msg)
-	}else{
-		c.Ctx.WriteString("success")
-	}
+	
 }
 
 // @router /query [get]
 func (c *AdminController) Query() {
-	var o = orm.NewOrm()
-	o.Using("default")
-
-	var admin models.User
-	var name = c.GetString("name")
-
-	if msg := admin.SelectPwdByName(name); msg != "" {
-		c.Ctx.WriteString(msg)
-	}else{
-		c.Ctx.WriteString("success: " + admin.ToString())
-	}
+	
 }

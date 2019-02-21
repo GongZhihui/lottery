@@ -1,7 +1,7 @@
 package lotto
 
 import(
-    //"log"
+    "encoding/json"
 )
 
 // Precision 中奖率精度 1% =0.01， 0.01% = 0.0001
@@ -49,4 +49,17 @@ func MakeItems(items map[int]*Item) (bool){
         lastRight = items[i].Right;
     }
     return true;
+}
+
+// SerializeItems .
+func SerializeItems(items map[int]*Item) string {
+    var js, _ = json.Marshal(items)
+    return string(js[:])
+}
+
+// ParseItems .
+func ParseItems(items string) map[int]*Item {
+    var ret = make(map[int]*Item)
+    json.Unmarshal([]byte(items), ret)
+    return ret
 }

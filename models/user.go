@@ -22,8 +22,9 @@ func (u *User) TableName() string{
 
 // ToString .
 func (u *User) ToString() string{
-	return "[Name: " + u.Name + ", Password: " + 
-		u.Password + ", Role: " + u.Role + "]"
+	return "[Name:" + u.Name + 
+		", Password:" + u.Password + 
+		", Role:" + u.Role + "]"
 }
 
 // SelectPwdByName .
@@ -36,3 +37,6 @@ func (u *User) SelectPwdByName(name string) string{
 	}
 	return ""
 }
+
+
+
