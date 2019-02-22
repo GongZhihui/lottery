@@ -5,7 +5,8 @@ import(
 	//"strconv"
 	"encoding/json"
 	"lottery/models"
-	//"fmt"
+	"lottery/app"
+	"fmt"
 )
 
 // AdminController .
@@ -37,7 +38,7 @@ func (c *AdminController) Get() {
 }
 
 // Notice .
-// @Title Post
+// @Title Notice
 // @Description 提交公告
 // @Param	body		body 	models.LottoBackendView	true  "body for LottoBackendView.Notice content"
 // @Success 200 {bool} true
@@ -56,7 +57,7 @@ func (c *AdminController) Notice() {
 }
 
 // Prompt .
-// @Title Post
+// @Title Prompt
 // @Description 提交提示
 // @Param	body		body 	models.LottoBackendView	true  "body for LottoBackendView.LottoPrompt content"
 // @Success 200 {bool} true
@@ -75,7 +76,7 @@ func (c *AdminController) Prompt() {
 }
 
 // LottoItem .
-// @Title Post
+// @Title LottoItem
 // @Description 提交奖品项
 // @Param	body		body 	models.LottoBackendView	true  "body for LottoBackendView.Items content"
 // @Success 200 {bool} true
@@ -90,15 +91,70 @@ func (c *AdminController) LottoItem() {
 
 	models.Update(&backend, "Items")
 	c.Data["json"] = true
+
+	// 通知item改变
+	app.LottoChange = true
 	c.ServeJSON()
 }
 
-// @router /delete [get]
-func (c *AdminController) Delete() {
-	
+// Check .
+// @Title Check
+// @Description 提交奖品项
+// @Param	body		body 	models.LotInfo	true  "body for LotInfo.Prefix content"
+// @Success 200 {object} models.LotInfo
+// @Failure 403 submit fail
+// @router /check [post]
+func (c *AdminController) Check() {
+	var info models.LotInfo
+	json.Unmarshal(c.Ctx.Input.RequestBody, &info)
+
+	if err := info.QueryByPrefix(); err == "" {
+		c.Data["json"] = info
+	}else{
+		c.Data["json"] = ""
+	}
+	c.ServeJSON()
 }
 
-// @router /query [get]
-func (c *AdminController) Query() {
-	
+// LoginInit .
+// @Title LoginInit
+// @Description 登录
+// @Failure 403 submit fail
+// @router /login [get]
+func (c *AdminController) LoginInit() {
+	c.TplName = "admin/login.html"
+}
+
+// Main .
+// @Title Main
+// @Description 登录
+// @Failure 403 submit fail
+// @router /main [get]
+func (c *AdminController) Main() {
+	c.TplName = "admin/admin.html"
+}
+
+// Login .
+// @Title Login
+// @Description 登录
+// @Param	body		body 	models.User	true  "body for User content"
+// @Success 200 {string} 跳转到main
+// @Failure 403 submit fail
+// @router /login [post]
+func (c *AdminController) Login() {
+	var user models.User
+	var name = c.GetString("name")
+	var pwd = c.GetString("password")
+
+	fmt.Println(name, pwd)
+
+	user.SelectPwdByName(name)
+	var lhs = user.Password
+	var rhs = user.EncodePassword(pwd)
+	fmt.Println(lhs, rhs)
+	if(lhs == rhs) {
+		c.Ctx.Redirect(302, "/v1/admin/main")
+	}else{
+		c.Ctx.Redirect(302, "/v1/admin/login")
+	}
 }

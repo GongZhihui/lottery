@@ -2,6 +2,9 @@ package models
 
 import(
 	"github.com/astaxie/beego/orm"
+	"crypto/md5"
+	"io"
+	"fmt"
 )
 
 // User user
@@ -36,6 +39,13 @@ func (u *User) SelectPwdByName(name string) string{
 		return err.Error()
 	}
 	return ""
+}
+
+// EncodePassword .
+func (u *User) EncodePassword(pwd string) string {
+	var h = md5.New()
+	io.WriteString(h, pwd) 
+    return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 

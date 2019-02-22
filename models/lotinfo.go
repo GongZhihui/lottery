@@ -24,3 +24,14 @@ func init() {
 func (u *LotInfo) TableName() string{
 	return "lot_info"
 }
+
+// QueryByPrefix .
+func (u *LotInfo) QueryByPrefix() string{
+	var sql = "select * from lot_info where prefix=?"
+	var o = orm.NewOrm()
+	o.Using("default")
+	if err := o.Raw(sql, u.Prefix).QueryRow(u); err != nil {
+		return err.Error()
+	}
+	return ""
+}
