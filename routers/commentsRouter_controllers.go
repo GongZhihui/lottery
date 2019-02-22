@@ -18,15 +18,6 @@ func init() {
 
     beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
         beego.ControllerComments{
-            Method: "Post",
-            Router: `/`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
-        beego.ControllerComments{
             Method: "Delete",
             Router: `/delete`,
             AllowHTTPMethods: []string{"get"},
@@ -36,9 +27,27 @@ func init() {
 
     beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
         beego.ControllerComments{
-            Method: "Insert",
-            Router: `/insert`,
-            AllowHTTPMethods: []string{"get"},
+            Method: "LottoItem",
+            Router: `/lotto_item`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
+        beego.ControllerComments{
+            Method: "Notice",
+            Router: `/notice`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
+        beego.ControllerComments{
+            Method: "Prompt",
+            Router: `/prompt`,
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -47,15 +56,6 @@ func init() {
         beego.ControllerComments{
             Method: "Query",
             Router: `/query`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
-        beego.ControllerComments{
-            Method: "Update",
-            Router: `/update`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

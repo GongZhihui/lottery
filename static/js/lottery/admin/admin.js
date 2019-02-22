@@ -2,16 +2,19 @@ var host = "http://" + window.location.host;
 
 // 添加物品
 function addItem() {
-    var item = $("#item").val();
-    var percent = $("#percent").val();
+    var item = $("#itemName").val();
+    var percent = $("#itemPercent").val();
     if (item != "" && percent != "") {
         var tr = "<tr><td>" + item + "</td>" + "<td>" + percent + "</td>"
             + "<td><button type=\"button\" class=\"btn btn-danger\">删除</button></td></tr>";
-        $("#tbody").append(tr);
+        $("#lottoTBodyAdd").append(tr);
     }
 }
 
 function init(){
+    // 清空table
+    $("#lottoTBody").empty();
+
     var req = "";
     $.ajax({
         type: 'GET',
@@ -40,22 +43,24 @@ function init(){
         }
 
     });
+
+    $("#lottoTBodyAdd").on("click", "button",function(){
+        $(this).parent().parent().remove();
+    });
 }
 
 $(function(){
     host = "http://" + window.location.host;
     init();
 
-    $("#tbody").on("click", "button",function(){
-        $(this).parent().parent().remove();
-    });
+    
 });
 
-// 提交
+// 提交item
 function submitItems() {
     var items = [];
     var i = 0; 
-    $("#tbody").find("tr").each(function(){
+    $("#lottoTBodyAdd").find("tr").each(function(){
         var tdArr = $(this).children();
         var name = tdArr.eq(0).text();
         var percent = parseFloat(tdArr.eq(1).text());
@@ -64,25 +69,19 @@ function submitItems() {
         items[i++] = item;
     });
 
-    var jvdata = { "param": { "type": "login", "items": items}};
+    var jvdata = {"items": items};
 
     var req = JSON.stringify(jvdata);
     console.log("req: ", req);
     $.ajax({
         type: 'POST',
-        url: host + "/lottery/admin/submit",
-        //url: "http://localhost:8080/lottery/admin/submit",
+        url: host + "/v1/admin/lotto_item",
         data: req,
         dataType: "json",
         contentType: "application/json",
         success: function (result) {
-            if(result == 200){
-                alert("提交成功!");
-            }else if(result == 100){
-                window.location.href = host + "/lottery/admin";
-                //window.location.href = "http://localhost:8080/lottery/admin";
-            }else{
-                alert(result);
+            if(result == true){
+                init();
             }
         },
         error: function (err) {
@@ -92,27 +91,51 @@ function submitItems() {
     });
 }
 
-function login(){
-    var account = $("#account").val();
-    var pwd = $("#password").val();
-    var req = {"account" : account, "password" : pwd};
+// 提交notice
+function submitNoticeFunc() {
+    var notice = $("#submitNotice").val()
+    var jvdata = {"notice": notice};
+
+    var req = JSON.stringify(jvdata);
+    console.log("req: ", req);
     $.ajax({
         type: 'POST',
-        //url: "lottery/admin/login",
-        url: host + "/lottery/admin/login",
-        data: JSON.stringify(req),
+        url: host + "/v1/admin/notice",
+        data: req,
         dataType: "json",
         contentType: "application/json",
         success: function (result) {
-            if(result == 200){
-                // window.location.href = "http://localhost:8080/lottery/admin/main";
-                window.location.href = host + "/lottery/admin/main";
-            }else{
-                alert("账号或密码错误!");
+            if(result == true){
+                init();
             }
         },
         error: function (err) {
-            alert("登录失败!");
+            alert("错误: " + err);
+        }
+
+    });
+}
+
+// 提交prompt
+function submitPromptFunc() {
+    var prompt = $("#submitPrompt").val()
+    var jvdata = {"lottoPrompt": prompt};
+
+    var req = JSON.stringify(jvdata);
+    console.log("req: ", req);
+    $.ajax({
+        type: 'POST',
+        url: host + "/v1/admin/prompt",
+        data: req,
+        dataType: "json",
+        contentType: "application/json",
+        success: function (result) {
+            if(result == true){
+                init();
+            }
+        },
+        error: function (err) {
+            alert("错误: " + err);
         }
 
     });

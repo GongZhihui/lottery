@@ -2,7 +2,8 @@ package models
 
 import(
 	"github.com/astaxie/beego/orm"
-	"lottery/app/Lotto"
+	"encoding/json"
+	//"fmt"
 )
 
 // LottoBackend LottoBackend
@@ -19,11 +20,27 @@ type Item struct{
 	Percent float64 `json:"percent"`
 }
 
+// SerializeItem .
+func (v *LottoBackendView) SerializeItem() string{
+	var js, _ = json.Marshal(v.Items)
+	return string(js[:])
+}
+
+// ParseItem .
+func (v *LottoBackendView) ParseItem(s string) {
+	json.Unmarshal([]byte(s), &v.Items)
+}
+
 // LottoBackendView .
 type LottoBackendView struct {
 	Notice string `json:"notice"`
 	LottoPrompt string `json:"lottoPrompt"`
 	Items []Item `json:"items"`
+}
+
+// MakeLottoBackendView . 
+func MakeLottoBackendView() LottoBackendView {
+	return LottoBackendView{"","", make([]Item, 0)}
 }
 
 func init() {
@@ -50,13 +67,11 @@ func (l *LottoBackend) ToString() string{
 
 // ToLottoBackendView .
 func (l *LottoBackend) ToLottoBackendView() LottoBackendView{
-	var lottItems = lotto.ParseItems(l.Items)
-	var items = make([]Item, 0)
-	for _, v := range lottItems {
-		items = append(items, Item{v.Name, v.Percent})
-	}
-	return LottoBackendView{l.Notice,
-		l.LottoPrompt, items}
+	var view = MakeLottoBackendView()
+	view.ParseItem(l.Items)
+	view.Notice = l.Notice
+	view.LottoPrompt = l.LottoPrompt
+	return view
 }
 
 // QueryByID .
