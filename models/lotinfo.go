@@ -9,6 +9,7 @@ type LotInfo struct {
 	ID string `orm:"pk;column(id);"`
 	Name string `orm:"column(name);"`
 	Prefix string `orm:"column(prefix);"`
+	// suffix其实是整个字符串不是后面一部分
 	Suffix string `orm:"column(suffix);"`
 	Confirm int `orm:"column(confirm);"`
 	CreateTime int64 `orm:"column(create_time);"`

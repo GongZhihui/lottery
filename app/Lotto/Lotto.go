@@ -14,11 +14,13 @@ const(
 type Manager struct{
 	LottoItems map[int]*Item;
 	Pos int;
+	Notice string;
+	Prompt string;
 } 
 
 // MakeManager .
 func MakeManager() Manager{
-	return Manager{make(map[int]*Item), 0}
+	return Manager{make(map[int]*Item), 0, "", ""}
 }
 
 // ToString .
@@ -76,4 +78,10 @@ func (m *Manager) PushItem(item *Item){
 		Precision = float64(percent) * 1.0;
 	}
 	m.Pos = m.Pos + 1;
+}
+
+// ClearItem clear item
+func (m *Manager) ClearItem(){
+	m.Pos = 0
+	m.LottoItems = make(map[int]*Item)
 }

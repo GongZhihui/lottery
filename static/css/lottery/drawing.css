@@ -1,0 +1,36 @@
+
+.notice {
+    margin-top: 50px;
+    margin-left: 50px;
+    width: 300px;
+    height: 200px;
+    float: left;
+}
+
+.notice textarea{
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background-color: aliceblue;
+}
+
+.prompt {
+    margin-top: 50px;
+    margin-left: 100px;
+    width: 250px;
+    height: 150px;
+    float: left;
+}
+.prompt textarea {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    background-color: aliceblue;
+}
+
+#lottery {
+    margin-left: 90px;
+    width: 500px;
+    height: 480px;
+    float: left;
+}

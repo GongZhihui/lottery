@@ -16,8 +16,10 @@ type LottoBackend struct {
 
 // Item .
 type Item struct{
+	Index int `json:"index"`
 	Name string `json:"name"`
 	Percent float64 `json:"percent"`
+	Prefix string `json:"prefix"`
 }
 
 // SerializeItem .
