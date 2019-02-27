@@ -7,6 +7,7 @@ import(
 	"lottery/models"
 	"lottery/app"
 	"fmt"
+	"time"
 )
 
 // AdminController .
@@ -97,22 +98,38 @@ func (c *AdminController) LottoItem() {
 	c.ServeJSON()
 }
 
-// Check .
-// @Title Check
-// @Description 提交奖品项
+// LotInfo .
+// @Title LotInfo
+// @Description 提交中奖信息
 // @Param	body		body 	models.LotInfo	true  "body for LotInfo.Prefix content"
 // @Success 200 {object} models.LotInfo
 // @Failure 403 submit fail
-// @router /check [post]
-func (c *AdminController) Check() {
+// @router /lotinfo [post]
+func (c *AdminController) LotInfo() {
 	var info models.LotInfo
 	json.Unmarshal(c.Ctx.Input.RequestBody, &info)
-
+ 
 	if err := info.QueryByPrefix(); err == "" {
 		c.Data["json"] = info
 	}else{
 		c.Data["json"] = ""
 	}
+	c.ServeJSON()
+}
+
+// LotInfoUpdate .
+// @Title LotInfoUpdate
+// @Description 修改中奖信息
+// @Param	body		body 	models.LotInfo	true  "body for LotInfo.Prefix content"
+// @Success 200 {bool} true
+// @Failure 403 submit fail
+// @router /lotinfo_update [post]
+func (c *AdminController) LotInfoUpdate() {
+	var info models.LotInfo
+	json.Unmarshal(c.Ctx.Input.RequestBody, &info)
+	info.UpdateTime = time.Now().Unix()
+	models.Update(&info, "Confirm", "Memo", "UpdateTime")
+	c.Data["json"] = true
 	c.ServeJSON()
 }
 

@@ -18,15 +18,6 @@ func init() {
 
     beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
         beego.ControllerComments{
-            Method: "Check",
-            Router: `/check`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
-        beego.ControllerComments{
             Method: "Login",
             Router: `/login`,
             AllowHTTPMethods: []string{"post"},
@@ -39,6 +30,24 @@ func init() {
             Method: "LoginInit",
             Router: `/login`,
             AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
+        beego.ControllerComments{
+            Method: "LotInfo",
+            Router: `/lotinfo`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lottery/controllers:AdminController"] = append(beego.GlobalControllerRouter["lottery/controllers:AdminController"],
+        beego.ControllerComments{
+            Method: "LotInfoUpdate",
+            Router: `/lotinfo_update`,
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

@@ -11,7 +11,7 @@ function addItem() {
     }
 }
 
-function init(){
+function init() {
     // 清空table
     $("#lottoTBody").empty();
 
@@ -32,8 +32,8 @@ function init(){
 
             var styleTr = ['class="success"', 'class="warning"', 'class="danger"'];
 
-            for(var i = 0,len = items.length; i < len; i++){
-                var tr = "<tr " + styleTr[i%3] + "><td>" + items[i].name + "</td>" + "<td>" + items[i].percent + "</td>"
+            for (var i = 0, len = items.length; i < len; i++) {
+                var tr = "<tr " + styleTr[i % 3] + "><td>" + items[i].name + "</td>" + "<td>" + items[i].percent + "</td>"
                     + "</tr>";
                 $("#lottoTBody").append(tr);
             }
@@ -44,32 +44,31 @@ function init(){
 
     });
 
-    $("#lottoTBodyAdd").on("click", "button",function(){
+    $("#lottoTBodyAdd").on("click", "button", function () {
         $(this).parent().parent().remove();
     });
 }
 
-$(function(){
+$(function () {
     host = "http://" + window.location.host;
     init();
 
-    
 });
 
 // 提交item
 function submitItems() {
     var items = [];
-    var i = 0; 
-    $("#lottoTBodyAdd").find("tr").each(function(){
+    var i = 0;
+    $("#lottoTBodyAdd").find("tr").each(function () {
         var tdArr = $(this).children();
         var name = tdArr.eq(0).text();
         var percent = parseFloat(tdArr.eq(1).text());
-        
-        var item = {"name" : name, "percent" : percent};
+
+        var item = { "name": name, "percent": percent };
         items[i++] = item;
     });
 
-    var jvdata = {"items": items};
+    var jvdata = { "items": items };
 
     var req = JSON.stringify(jvdata);
     console.log("req: ", req);
@@ -80,7 +79,7 @@ function submitItems() {
         dataType: "json",
         contentType: "application/json",
         success: function (result) {
-            if(result == true){
+            if (result == true) {
                 init();
             }
         },
@@ -94,7 +93,7 @@ function submitItems() {
 // 提交notice
 function submitNoticeFunc() {
     var notice = $("#submitNotice").val()
-    var jvdata = {"notice": notice};
+    var jvdata = { "notice": notice };
 
     var req = JSON.stringify(jvdata);
     console.log("req: ", req);
@@ -105,7 +104,7 @@ function submitNoticeFunc() {
         dataType: "json",
         contentType: "application/json",
         success: function (result) {
-            if(result == true){
+            if (result == true) {
                 init();
             }
         },
@@ -119,10 +118,9 @@ function submitNoticeFunc() {
 // 提交prompt
 function submitPromptFunc() {
     var prompt = $("#submitPrompt").val()
-    var jvdata = {"lottoPrompt": prompt};
+    var jvdata = { "lottoPrompt": prompt };
 
     var req = JSON.stringify(jvdata);
-    console.log("req: ", req);
     $.ajax({
         type: 'POST',
         url: host + "/v1/admin/prompt",
@@ -130,7 +128,7 @@ function submitPromptFunc() {
         dataType: "json",
         contentType: "application/json",
         success: function (result) {
-            if(result == true){
+            if (result == true) {
                 init();
             }
         },
@@ -140,3 +138,92 @@ function submitPromptFunc() {
 
     });
 }
+
+function lookLotInfo() {
+
+    var identityNum = $("#identityNum").val()
+    var jvdata = { "prefix": identityNum };
+
+    var req = JSON.stringify(jvdata);
+    $.ajax({
+        type: 'POST',
+        url: host + "/v1/admin/lotinfo",
+        data: req,
+        dataType: "json",
+        contentType: "application/json",
+        success: function (result) {
+            if (result == "") {
+                alert("未找到!!!");
+            } else {
+                var confirm = (result.Confirm == 0) ? "未确认" : "已确认";
+                var time = timestampToTime(result.CreateTime);
+                var td = $("#lotInfoBody").find("tr").eq(0).find("td");
+                td.eq(0).attr("lotid", result.ID);
+                td.eq(0).text(result.Name);
+                td.eq(1).text(result.Prefix);
+                td.eq(2).text(time);
+                $("#confirm").val(confirm);
+                $("#Memo").val(result.Memo);
+            }
+        },
+        error: function (err) {
+            alert("错误: " + err);
+        }
+
+    });
+}
+
+function submitCheck() {
+    var confirm = parseInt($("#confirm").val());
+    if(confirm != 1 &&  confirm != 0){
+        alert("请输入0 或者 1");
+        return;
+    }
+    var td = $("#lotInfoBody").find("tr").eq(0).find("td");
+    var id = td.eq(0).attr("lotid");
+    var jvdata = {
+        "ID" : id,
+        "Confirm": confirm,
+        "Memo" : $("#Memo").val()
+    }
+
+    var req = JSON.stringify(jvdata);
+    $.ajax({
+        type: 'POST',
+        url: host + "/v1/admin/lotinfo_update",
+        data: req,
+        dataType: "json",
+        contentType: "application/json",
+        success: function (result) {
+            alert("提交成功");
+        },
+        error: function (err) {
+            alert("错误: " + err);
+        }
+
+    });
+}
+
+function timestampToTime(timestamp) {
+    var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+    var D = date.getDate() + ' ';
+    var h = date.getHours() + ':';
+    var m = date.getMinutes() + ':';
+    var s = date.getSeconds();
+    return Y + M + D + h + m + s;
+}
+
+$(function () {
+    $('#checkModel').on('hide.bs.modal',
+        function () {
+            $("#identityNum").val("")
+            var td = $("#lotInfoBody").find("tr").eq(0).find("td");
+            td.eq(0).text("");
+            td.eq(1).text("");
+            td.eq(2).text("");
+            $("#confirm").val("");
+            $("#Memo").val("");
+        })
+});
