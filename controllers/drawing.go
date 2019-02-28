@@ -1,19 +1,19 @@
 package controllers
 
 import(
-	"github.com/astaxie/beego"
-	//"github.com/astaxie/beego/orm"
-	"strconv"
-	"lottery/models"
-	"fmt"
-	"lottery/app"
-	"lottery/utils"
-	"time"
+    "github.com/astaxie/beego"
+    //"github.com/astaxie/beego/orm"
+    "strconv"
+    "lottery/models"
+    "fmt"
+    "lottery/app"
+    "lottery/utils"
+    "time"
 )
 
 // DrawingController .
 type DrawingController struct {
-	beego.Controller
+    beego.Controller
 }
 
 // Get .
@@ -22,17 +22,17 @@ type DrawingController struct {
 // @Failure 403 submit fail
 // @router / [get]
 func (c *DrawingController) Get() {
-	app.LottoChange = true;
-	var lot = app.GetLotto()
-	for k, v := range lot.LottoItems{
-		var key = "Unit" + strconv.Itoa(k) + "Name"
-		c.Data[key] = v.Name
-		fmt.Println(key, v.Name)
-	}
-	c.Data["Prompt"] = lot.Prompt
-	c.Data["Notice"] = lot.Notice
+    app.LottoChange = true;
+    var lot = app.GetLotto()
+    for k, v := range lot.LottoItems{
+        var key = "Unit" + strconv.Itoa(k) + "Name"
+        c.Data[key] = v.Name
+        fmt.Println(key, v.Name)
+    }
+    c.Data["Prompt"] = lot.Prompt
+    c.Data["Notice"] = lot.Notice
 
-	c.TplName = "index.html"
+    c.TplName = "index.html"
 }
 
 // Post .
@@ -43,23 +43,23 @@ func (c *DrawingController) Get() {
 // @Failure 403 submit fail
 // @router / [post]
 func (c *DrawingController) Post() {
-	var i, name = app.GetLotto().DrawingOnce()
-	var rs = utils.GenerateRandomString(16)
-	var prefix = string([]byte(rs[:8]))
-	var item = models.Item{Index: i, Name : name, Prefix : prefix}
-	c.Data["json"] = item
+    var i, name = app.GetLotto().DrawingOnce()
+    var rs = utils.GenerateRandomString(16)
+    var prefix = string([]byte(rs[:8]))
+    var item = models.Item{Index: i, Name : name, Prefix : prefix}
+    c.Data["json"] = item
 
-	var lotInfo models.LotInfo
-	lotInfo.ID = utils.GenerateRandomString(5)
-	lotInfo.CreateTime = time.Now().Unix()
-	lotInfo.Confirm = 0
-	lotInfo.Name = name
-	lotInfo.Prefix = prefix
-	lotInfo.Suffix = rs
-	lotInfo.UpdateTime = time.Now().Unix()
-	lotInfo.Memo = ""
+    var lotInfo models.LotInfo
+    lotInfo.ID = utils.GenerateRandomString(5)
+    lotInfo.CreateTime = time.Now().Unix()
+    lotInfo.Confirm = 0
+    lotInfo.Name = name
+    lotInfo.Prefix = prefix
+    lotInfo.Suffix = rs
+    lotInfo.UpdateTime = time.Now().Unix()
+    lotInfo.Memo = ""
 
-	models.Insert(&lotInfo)
+    models.Insert(&lotInfo)
 
-	c.ServeJSON()
+    c.ServeJSON()
 }

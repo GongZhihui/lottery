@@ -1,18 +1,18 @@
 package controllers
 
 import(
-	"github.com/astaxie/beego"
-	//"strconv"
-	"encoding/json"
-	"lottery/models"
-	"lottery/app"
-	"fmt"
-	"time"
+    "github.com/astaxie/beego"
+    //"strconv"
+    "encoding/json"
+    "lottery/models"
+    "lottery/app"
+    "fmt"
+    "time"
 )
 
 // AdminController .
 type AdminController struct {
-	beego.Controller
+    beego.Controller
 }
 
 // Get .
@@ -21,11 +21,11 @@ type AdminController struct {
 // @Success 200 {object} models.LottoBackendView
 // @router / [get]
 func (c *AdminController) Get() {
-	var back = models.MakeLottoBackend()
-	back.QueryByID()
-	var view = back.ToLottoBackendView()
-	c.Data["json"] = view
-	c.ServeJSON()
+    var back = models.MakeLottoBackend()
+    back.QueryByID()
+    var view = back.ToLottoBackendView()
+    c.Data["json"] = view
+    c.ServeJSON()
 }
 
 // Notice .
@@ -36,15 +36,15 @@ func (c *AdminController) Get() {
 // @Failure 403 submit fail
 // @router /notice [post]
 func (c *AdminController) Notice() {
-	var view models.LottoBackendView
-	json.Unmarshal(c.Ctx.Input.RequestBody, &view)
+    var view models.LottoBackendView
+    json.Unmarshal(c.Ctx.Input.RequestBody, &view)
 
-	var backend = models.MakeLottoBackend()
-	backend.Notice = view.Notice
+    var backend = models.MakeLottoBackend()
+    backend.Notice = view.Notice
 
-	models.Update(&backend, "Notice")
-	c.Data["json"] = true
-	c.ServeJSON()
+    models.Update(&backend, "Notice")
+    c.Data["json"] = true
+    c.ServeJSON()
 }
 
 // Prompt .
@@ -55,15 +55,15 @@ func (c *AdminController) Notice() {
 // @Failure 403 submit fail
 // @router /prompt [post]
 func (c *AdminController) Prompt() {
-	var view models.LottoBackendView
-	json.Unmarshal(c.Ctx.Input.RequestBody, &view)
+    var view models.LottoBackendView
+    json.Unmarshal(c.Ctx.Input.RequestBody, &view)
 
-	var backend = models.MakeLottoBackend()
-	backend.LottoPrompt = view.LottoPrompt
+    var backend = models.MakeLottoBackend()
+    backend.LottoPrompt = view.LottoPrompt
 
-	models.Update(&backend, "LottoPrompt")
-	c.Data["json"] = true
-	c.ServeJSON()
+    models.Update(&backend, "LottoPrompt")
+    c.Data["json"] = true
+    c.ServeJSON()
 }
 
 // LottoItem .
@@ -74,18 +74,18 @@ func (c *AdminController) Prompt() {
 // @Failure 403 submit fail
 // @router /lotto_item [post]
 func (c *AdminController) LottoItem() {
-	var view models.LottoBackendView
-	json.Unmarshal(c.Ctx.Input.RequestBody, &view)
+    var view models.LottoBackendView
+    json.Unmarshal(c.Ctx.Input.RequestBody, &view)
 
-	var backend = models.MakeLottoBackend()
-	backend.Items = view.SerializeItem()
+    var backend = models.MakeLottoBackend()
+    backend.Items = view.SerializeItem()
 
-	models.Update(&backend, "Items")
-	c.Data["json"] = true
+    models.Update(&backend, "Items")
+    c.Data["json"] = true
 
-	// 通知item改变
-	app.LottoChange = true
-	c.ServeJSON()
+    // 通知item改变
+    app.LottoChange = true
+    c.ServeJSON()
 }
 
 // LotInfo .
@@ -96,15 +96,15 @@ func (c *AdminController) LottoItem() {
 // @Failure 403 submit fail
 // @router /lotinfo [post]
 func (c *AdminController) LotInfo() {
-	var info models.LotInfo
-	json.Unmarshal(c.Ctx.Input.RequestBody, &info)
+    var info models.LotInfo
+    json.Unmarshal(c.Ctx.Input.RequestBody, &info)
  
-	if err := info.QueryByPrefix(); err == "" {
-		c.Data["json"] = info
-	}else{
-		c.Data["json"] = ""
-	}
-	c.ServeJSON()
+    if err := info.QueryByPrefix(); err == "" {
+        c.Data["json"] = info
+    }else{
+        c.Data["json"] = ""
+    }
+    c.ServeJSON()
 }
 
 // LotInfoUpdate .
@@ -115,12 +115,12 @@ func (c *AdminController) LotInfo() {
 // @Failure 403 submit fail
 // @router /lotinfo_update [post]
 func (c *AdminController) LotInfoUpdate() {
-	var info models.LotInfo
-	json.Unmarshal(c.Ctx.Input.RequestBody, &info)
-	info.UpdateTime = time.Now().Unix()
-	models.Update(&info, "Confirm", "Memo", "UpdateTime")
-	c.Data["json"] = true
-	c.ServeJSON()
+    var info models.LotInfo
+    json.Unmarshal(c.Ctx.Input.RequestBody, &info)
+    info.UpdateTime = time.Now().Unix()
+    models.Update(&info, "Confirm", "Memo", "UpdateTime")
+    c.Data["json"] = true
+    c.ServeJSON()
 }
 
 // LoginInit .
@@ -129,7 +129,7 @@ func (c *AdminController) LotInfoUpdate() {
 // @Failure 403 submit fail
 // @router /login [get]
 func (c *AdminController) LoginInit() {
-	c.TplName = "admin/login.html"
+    c.TplName = "admin/login.html"
 }
 
 // Main .
@@ -138,7 +138,7 @@ func (c *AdminController) LoginInit() {
 // @Failure 403 submit fail
 // @router /main [get]
 func (c *AdminController) Main() {
-	c.TplName = "admin/admin.html"
+    c.TplName = "admin/admin.html"
 }
 
 // Login .
@@ -149,21 +149,21 @@ func (c *AdminController) Main() {
 // @Failure 403 submit fail
 // @router /login [post]
 func (c *AdminController) Login() {
-	var user models.User
-	var name = c.GetString("name")
-	var pwd = c.GetString("password")
+    var user models.User
+    var name = c.GetString("name")
+    var pwd = c.GetString("password")
 
-	fmt.Println(name, pwd)
+    fmt.Println(name, pwd)
 
-	user.SelectPwdByName(name)
-	var lhs = user.Password
-	var rhs = user.EncodePassword(pwd)
-	fmt.Println(lhs, rhs)
-	if(lhs == rhs) {
-		c.SetSession("userName", name)
-		c.Ctx.SetCookie("userName", name, 30, "/v1/")
-		c.Ctx.Redirect(302, "/v1/admin/main")
-	}else{
-		c.Ctx.Redirect(302, "/v1/admin/login")
-	}
+    user.SelectPwdByName(name)
+    var lhs = user.Password
+    var rhs = user.EncodePassword(pwd)
+    fmt.Println(lhs, rhs)
+    if(lhs == rhs) {
+        c.SetSession("userName", name)
+        c.Ctx.SetCookie("userName", name, 30, "/v1/")
+        c.Ctx.Redirect(302, "/v1/admin/main")
+    }else{
+        c.Ctx.Redirect(302, "/v1/admin/login")
+    }
 }
