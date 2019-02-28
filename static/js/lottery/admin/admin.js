@@ -1,5 +1,7 @@
 var host = "http://" + window.location.host;
 
+var FLUSH_HTML = "可能session过期，请试着刷新页面"
+
 // 添加物品
 function addItem() {
     var item = $("#itemName").val();
@@ -84,7 +86,7 @@ function submitItems() {
             }
         },
         error: function (err) {
-            alert("错误: " + err);
+            alert("错误: " + err + FLUSH_HTML);
         }
 
     });
@@ -109,7 +111,7 @@ function submitNoticeFunc() {
             }
         },
         error: function (err) {
-            alert("错误: " + err);
+            alert("错误: " + err + FLUSH_HTML);
         }
 
     });
@@ -133,7 +135,7 @@ function submitPromptFunc() {
             }
         },
         error: function (err) {
-            alert("错误: " + err);
+            alert("错误: " + err + FLUSH_HTML);
         }
 
     });
@@ -167,7 +169,7 @@ function lookLotInfo() {
             }
         },
         error: function (err) {
-            alert("错误: " + err);
+            alert("错误: " + err + FLUSH_HTML);
         }
 
     });

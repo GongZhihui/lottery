@@ -24,17 +24,7 @@ func (c *AdminController) Get() {
 	var back = models.MakeLottoBackend()
 	back.QueryByID()
 	var view = back.ToLottoBackendView()
-	// view.Notice = "hello"
-	// view.LottoPrompt = "gzh"
-	// var item = make([]models.Item, 0)
-	// item = append(item, models.Item{"魔岩石", 0.5})
-	// item = append(item, models.Item{"金币", 0.25})
-	// item = append(item, models.Item{"无色", 0.01})
-	// item = append(item, models.Item{"牛奶", 0.02})
-	// item = append(item, models.Item{"龙人", 0.25})
-	// view.Items = item
 	c.Data["json"] = view
-	//c.Data["json"] = back.ToLottoBackendView()
 	c.ServeJSON()
 }
 
@@ -170,6 +160,8 @@ func (c *AdminController) Login() {
 	var rhs = user.EncodePassword(pwd)
 	fmt.Println(lhs, rhs)
 	if(lhs == rhs) {
+		c.SetSession("userName", name)
+		c.Ctx.SetCookie("userName", name, 30, "/v1/")
 		c.Ctx.Redirect(302, "/v1/admin/main")
 	}else{
 		c.Ctx.Redirect(302, "/v1/admin/login")
