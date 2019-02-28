@@ -5,7 +5,7 @@ import(
     //"github.com/astaxie/beego/orm"
     "strconv"
     "lottery/models"
-    "fmt"
+    //"fmt"
     "lottery/app"
     "lottery/utils"
     "time"
@@ -27,7 +27,6 @@ func (c *DrawingController) Get() {
     for k, v := range lot.LottoItems{
         var key = "Unit" + strconv.Itoa(k) + "Name"
         c.Data[key] = v.Name
-        fmt.Println(key, v.Name)
     }
     c.Data["Prompt"] = lot.Prompt
     c.Data["Notice"] = lot.Notice

@@ -6,7 +6,7 @@ import(
     "encoding/json"
     "lottery/models"
     "lottery/app"
-    "fmt"
+    //"fmt"
     "time"
 )
 
@@ -152,16 +152,12 @@ func (c *AdminController) Login() {
     var user models.User
     var name = c.GetString("name")
     var pwd = c.GetString("password")
-
-    fmt.Println(name, pwd)
-
     user.SelectPwdByName(name)
     var lhs = user.Password
     var rhs = user.EncodePassword(pwd)
-    fmt.Println(lhs, rhs)
     if(lhs == rhs) {
         c.SetSession("userName", name)
-        c.Ctx.SetCookie("userName", name, 30, "/v1/")
+        c.Ctx.SetCookie("userName", name, 1200, "/v1/")
         c.Ctx.Redirect(302, "/v1/admin/main")
     }else{
         c.Ctx.Redirect(302, "/v1/admin/login")
